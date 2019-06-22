@@ -2,7 +2,7 @@ import requests
 import time
 from datetime import datetime, timedelta
 
-BITCOIN_PRICE_THRESHOLD = 9000
+BITCOIN_PRICE_THRESHOLD = 10000
 BITCOIN_API_URL = 'https://api.coinmarketcap.com/v1/ticker/bitcoin/'
 IFTTT_WEBHOOKS_URL = 'https://maker.ifttt.com/trigger/{}/with/key/{YOUR-IFTTT-KEY}'
 
@@ -27,20 +27,24 @@ def post_ifttt_webhook(event, value):
     requests.post(ifttt_event_url, json=data)  # Sends a HTTP POST request to the webhook URL
 
 def main():
-    bitcoin_history = []
     while True:
+
         price = get_latest_bitcoin_price()
         percent1 = get_bitcoin_1percent();
-        date = datetime.now()
 
-        if percent1 >= 2:
-            mes = "BTC price increased <b>" + str(percent1) + "%<b> the last 1h! " + date.strftime('%d.%m.%Y %H:%M') + ' $' + str(price)
+        if datetime.now().minute == 0:
+            execute = True
+
+        if percent1 >= 2 and execute:
+            mes = "BTC price increased <b>" + str(percent1) + "%<b> the last 1h! " + datetime.now().strftime('%d.%m.%Y %H:%M') + ' $' + str(price)
             #print(mes)
             post_ifttt_webhook('bitcoin_percent_update', mes)
-        elif percent1 <= -2:
-            mes = "BTC price decreased <b>" + str(percent1) + "%<b> the last 1h! " + date.strftime('%d.%m.%Y %H:%M') + ' $' + str(price)
+            execute = False
+        elif percent1 <= -2 and execute:
+            mes = "BTC price decreased <b>" + str(percent1) + "%<b> the last 1h! " + datetime.now().strftime('%d.%m.%Y %H:%M') + ' $' + str(price)
             #print(mes)
             post_ifttt_webhook('bitcoin_percent_update', mes)
+            execute = False
 
         #Send every day the 24h percent
         if datetime.now().hour == 6 and datetime.now().minute == 30 and datetime.now().second == 0:

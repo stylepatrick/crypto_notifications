@@ -1,0 +1,10 @@
+version: '2'
+services:
+
+  crypto-notification:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    command: crypto_notifications.py
+    volumes:
+    - ./:/app/
