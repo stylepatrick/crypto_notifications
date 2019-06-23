@@ -30,9 +30,10 @@ def main():
     while True:
 
         price = get_latest_bitcoin_price()
-        percent1 = get_bitcoin_1percent();
+        percent1 = get_bitcoin_1percent()
 
-        if datetime.now().minute == 0:
+        if datetime.now().minute == 0 and datetime.now().second == 0:
+            time.sleep(1)
             execute = True
 
         if percent1 >= 2 and execute:
