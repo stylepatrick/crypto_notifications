@@ -1,2 +1,2 @@
-# crypto_notifications
-Telegram notification bot for cryptocurrency
+# Cryptocurrency notification bot
+Telegram notification for price change of cryptocurrency.
